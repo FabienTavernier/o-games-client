@@ -9,6 +9,7 @@
 
 @use 'base/fonts';
 @use 'base/base';
+@use 'base/typography';
 @use 'base/helpers';
 
 @use 'layout/grid';
@@ -16,10 +17,7 @@
 @use 'layout/content';
 @use 'layout/footer';
 
-// @use 'components/buttons';
-// @use 'components/carousel';
-// @use 'components/cover';
-// @use 'components/dropdown';
+@use 'components/tic-tac-toe';
 
 // @use 'pages/home';
 // @use 'pages/contact';

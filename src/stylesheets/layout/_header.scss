@@ -10,12 +10,6 @@
 .header {
   flex-direction: column;
 
-  h1 {
-    @include m.sizes('oversize');
-
-    font-family: v.$font-serif;
-  }
-
   &__scroll {
     @include m.sizes('biggest');
 

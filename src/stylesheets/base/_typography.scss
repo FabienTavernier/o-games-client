@@ -1,0 +1,21 @@
+/**
+ * __TYPOGRAPHY__
+ *
+ * Regroupe les styles des titres et autres polices
+ */
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+@use '../abstracts/functions' as f;
+
+h1 {
+  @include m.sizes('oversize');
+
+  font-family: v.$font-serif;
+}
+
+h2 {
+  @include m.sizes('biggest');
+
+  font-family: v.$font-serif;
+  margin-bottom: f.add-line(2);
+}

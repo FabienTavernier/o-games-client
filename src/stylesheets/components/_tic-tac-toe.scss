@@ -1,0 +1,40 @@
+/**
+ * __TIC-TAC-TOE__
+ *
+ * Définit le style du jeu de Morpion (<TicTacToe />)
+ */
+ @use "../abstracts/variables" as v;
+
+.tic-tac-toe {
+  .board {
+    background: v.$color-light;
+    border: 4px solid v.$color-light;
+    border-radius: 4px;
+    width: 60%;
+  }
+
+  .row {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: .5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .square {
+    position: relative;
+    text-align: center;
+  }
+
+  .cell {
+    background-color: v.$color-white;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font: 700 4.25rem/1 v.$font-code;
+    inset: 0;
+    position: absolute;
+  }
+}
