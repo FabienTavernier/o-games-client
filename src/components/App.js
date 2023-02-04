@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import Footer from './Footer';
 
 import Header from './Header';
 
@@ -19,9 +20,7 @@ function App() {
         </div>
       </main>
 
-      <footer className="footer">
-        <p>© {(new Date()).getFullYear()} – O'Clock</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
