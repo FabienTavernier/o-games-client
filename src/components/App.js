@@ -1,7 +1,10 @@
 import { useRef } from 'react';
-import Footer from './Footer';
 
 import Header from './Header';
+import Content from './Content';
+import Footer from './Footer';
+
+import TicTacToe from './games/TicTacToe';
 
 function App() {
   const mainElement = useRef(null);
@@ -11,13 +14,9 @@ function App() {
       <Header target={mainElement} />
 
       <main className="main" ref={mainElement}>
-        <div className="main__content">
-          <div className="container">
-            <h2>
-              stop dreaming and code
-            </h2>
-          </div>
-        </div>
+        <Content>
+          <TicTacToe />
+        </Content>
       </main>
 
       <Footer />
