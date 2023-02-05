@@ -1,9 +1,17 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Cell from './Cell';
 
 function TicTacToe({ numberOfRows }) {
-  const board = new Array(numberOfRows * numberOfRows).fill(null);
+  const [board, setBoard] = useState(Array(numberOfRows * numberOfRows).fill(null));
+
+  function handleCellClick(i) {
+    const updatedBoard = [...board];
+    updatedBoard[i] = 'x';
+
+    setBoard(updatedBoard);
+  }
 
   function getRows(number) {
     const rowsElements = [];
@@ -29,6 +37,7 @@ function TicTacToe({ numberOfRows }) {
         <Cell
           key={`cell-${cellIndex}`}
           value={board[cellIndex]}
+          onCellClick={() => handleCellClick(cellIndex)}
           size={100 / number}
         />
       );
