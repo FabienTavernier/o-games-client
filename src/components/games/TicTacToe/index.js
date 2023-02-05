@@ -203,9 +203,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
   };
 
   return (
-    <div className="game tic-tac-toe container">
-      <h2>Tic-Tac-Toe</h2>
-
+    <>
       {!modal && (
         <div className="status">
           <p>Next player: {xTurn ? 'x' : 'o'}</p>
@@ -215,7 +213,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
       <div className="board">
         {drawBoard(numberOfRows)}
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,17 +1,23 @@
 import { useRef, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
 import Header from './Header';
 import Content from './Content';
 import Footer from './Footer';
 import Modal from './Modal';
-
 import TicTacToe from './games/TicTacToe';
+
+import Home from '../pages/Home';
+import NotFound from '../pages/NotFound';
+import Game from '../pages/Game';
 
 function App() {
   const [modal, setModal] = useState(null);
 
   const mainElement = useRef(null);
+
+  const location = useLocation();
 
   const handleModalClose = () => {
     setModal(null);
@@ -22,25 +28,49 @@ function App() {
       <Header target={mainElement} />
 
       <main className="main" ref={mainElement}>
-        <Content>
-          <Routes>
-            <Route path="/" element={<h2>Choose a game</h2>} />
+        <AnimatePresence>
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={(
+                <Content>
+                  <Home />
+                </Content>
+              )}
+            />
 
             <Route
               path="/tic-tac-toe"
               element={(
-                <TicTacToe modal={modal} setModal={setModal} />
+                <Content>
+                  <Game name="Tic Tac Toe">
+                    <TicTacToe modal={modal} setModal={setModal} />
+                  </Game>
+                </Content>
               )}
             />
 
             <Route
               path="/other"
-              element={<h2>Other game</h2>}
+              element={(
+                <Content>
+                  <Game name="Other game">
+                    <p>Do you want an other Game ?</p>
+                  </Game>
+                </Content>
+              )}
             />
 
-            <Route path="*" element={<h2>404</h2>}  />
+            <Route
+              path="*"
+              element={(
+                <Content>
+                  <NotFound />
+                </Content>
+              )}
+            />
           </Routes>
-        </Content>
+        </AnimatePresence>
       </main>
 
       <Footer />

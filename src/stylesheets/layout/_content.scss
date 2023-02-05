@@ -24,9 +24,9 @@
     transform-style: preserve-3d;
     width: 100%;
 
-    &--flip {
-      transform: rotateY(180deg);
-    }
+    // &--flip {
+    //   transform: rotateY(180deg);
+    // }
 
     > .container {
       height: 85%;
