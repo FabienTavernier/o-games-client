@@ -1,12 +1,19 @@
-import { Link, NavLink } from 'react-router-dom';
+import { useEffect, useCallback } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Icon from './ui/Icon';
 
 function Header({ target }) {
-  const handleClickScroll = () => {
+  const { pathname } = useLocation();
+
+  const handleClickScroll = useCallback(() => {
     target.current.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, [target]);
+
+  useEffect(() => {
+    handleClickScroll();
+  }, [pathname, handleClickScroll]);
 
   return (
     <header className="header container">
