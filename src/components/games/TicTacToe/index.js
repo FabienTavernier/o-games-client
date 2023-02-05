@@ -2,14 +2,14 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Cell from './Cell';
+import Button from '../../Button';
 
-function TicTacToe({ numberOfRows }) {
-  const [board, setBoard] = useState(Array(numberOfRows * numberOfRows).fill(null));
+function TicTacToe({ modal, setModal, numberOfRows }) {
+  const [board, setBoard] = useState(getBoard());
   const [xTurn, setXTurn] = useState(true);
-  const [hasWin, setHasWin] = useState(null);
 
   function handleCellClick(i) {
-    if (board[i] || hasWin) {
+    if (board[i] || modal) {
       return;
     }
 
@@ -21,11 +21,15 @@ function TicTacToe({ numberOfRows }) {
     setBoard(updatedBoard);
 
     if (detectWin(updatedBoard, i)) {
-      setHasWin(symbol);
+      declareWinner(symbol);
     }
     else {
       setXTurn(!xTurn);
     }
+  }
+
+  function getBoard() {
+    return Array(numberOfRows * numberOfRows).fill(null);
   }
 
   function getRows(number) {
@@ -123,32 +127,63 @@ function TicTacToe({ numberOfRows }) {
     );
   }
 
+  function declareWinner(symbol) {
+    function getModalContent() {
+      const looser = symbol === 'x' ? 'o' : 'x';
+
+      const handleClick = () => {
+        setBoard(getBoard());
+        setXTurn(symbol !== 'x');
+      };
+
+      return (
+        <>
+          <p>{looser.toUpperCase()}, it's time to take your revenge…</p>
+
+          <div>
+            <Button
+              className="button button--primary button--center"
+              action={handleClick}
+            >
+              Let's fight
+            </Button>
+          </div>
+        </>
+      );
+    }
+
+    setModal({
+      title: `${symbol.toUpperCase()} wins!`,
+      content: getModalContent(),
+      type: 'success',
+    });
+  }
+
   return (
     <div className="game tic-tac-toe container">
       <h2>Tic-Tac-Toe</h2>
 
+      {!modal && (
+        <div className="status">
+          <p>Next player: {xTurn ? 'x' : 'o'}</p>
+        </div>
+      )}
+
       <div className="board">
         {getRows(numberOfRows)}
-      </div>
-
-      <div className="status">
-        {hasWin && (
-          <p>Player <strong>{hasWin}</strong> wins!</p>
-        )}
-
-        {!hasWin && (
-          <p>Next player: {xTurn ? 'x' : 'o'}</p>
-        )}
       </div>
     </div>
   );
 }
 
 TicTacToe.propTypes = {
+  modal: PropTypes.any,
+  setModal: PropTypes.func.isRequired,
   numberOfRows: PropTypes.number,
 };
 
 TicTacToe.defaultProps = {
+  modal: null,
   numberOfRows: 3,
 };
 

@@ -4,6 +4,7 @@
  * Définit le layout de la page (<main />)
  */
 @use "../abstracts/variables" as v;
+@use "../abstracts/functions" as f;
 
 .main {
   background: v.$color-secondary;
@@ -31,5 +32,9 @@
       height: 85%;
       width: 100%;
     }
+  }
+
+  h2 {
+    margin-bottom: f.add-line(2);
   }
 }

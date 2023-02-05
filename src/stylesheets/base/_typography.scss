@@ -17,5 +17,4 @@ h2 {
   @include m.sizes('biggest');
 
   font-family: v.$font-serif;
-  margin-bottom: f.add-line(2);
 }
