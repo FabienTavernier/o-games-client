@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 import Header from './Header';
 import Content from './Content';
@@ -22,7 +23,23 @@ function App() {
 
       <main className="main" ref={mainElement}>
         <Content>
-          <TicTacToe modal={modal} setModal={setModal} />
+          <Routes>
+            <Route path="/" element={<h2>Choose a game</h2>} />
+
+            <Route
+              path="/tic-tac-toe"
+              element={(
+                <TicTacToe modal={modal} setModal={setModal} />
+              )}
+            />
+
+            <Route
+              path="/other"
+              element={<h2>Other game</h2>}
+            />
+
+            <Route path="*" element={<h2>404</h2>}  />
+          </Routes>
         </Content>
       </main>
 

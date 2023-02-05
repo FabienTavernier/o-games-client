@@ -10,9 +10,40 @@
 .header {
   flex-direction: column;
 
+  h1 {
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
   &__scroll {
     @include m.sizes('biggest');
 
     margin-top: f.add-line(8);
+  }
+}
+
+.nav {
+  &__list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+  }
+
+  &__item:not(:last-child)::after {
+    content: '|';
+    padding: 0 1rem;
+  }
+
+  &__link {
+    color: v.$color-grey;
+    text-decoration: none;
+    transition: color .3s linear;
+
+    &.active,
+    &:hover {
+      color: v.$color-primary;
+    }
   }
 }
