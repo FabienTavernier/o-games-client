@@ -5,12 +5,18 @@ import Cell from './Cell';
 
 function TicTacToe({ numberOfRows }) {
   const [board, setBoard] = useState(Array(numberOfRows * numberOfRows).fill(null));
+  const [xTurn, toggleXTurn] = useState(true);
 
   function handleCellClick(i) {
+    if (board[i]) {
+      return;
+    }
+
     const updatedBoard = [...board];
-    updatedBoard[i] = 'x';
+    updatedBoard[i] = xTurn ? 'x' : 'o';
 
     setBoard(updatedBoard);
+    toggleXTurn(!xTurn);
   }
 
   function getRows(number) {
