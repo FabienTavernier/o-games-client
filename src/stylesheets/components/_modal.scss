@@ -49,7 +49,8 @@
   }
 
   &--success,
-  &--error {
+  &--error,
+  &--warning {
     transform: scale(1);
     z-index: 10;
 
@@ -88,6 +89,18 @@
     .modal__content {
       h2 {
         color: v.$color-error;
+      }
+    }
+  }
+
+  &--warning {
+    .modal__overlay {
+      background: rgba(v.$color-warning, 0.8);
+    }
+
+    .modal__content {
+      h2 {
+        color: v.$color-warning;
       }
     }
   }

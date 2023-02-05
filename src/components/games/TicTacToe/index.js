@@ -25,6 +25,10 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
     }
     else {
       setXTurn(!xTurn);
+
+      if (updatedBoard.filter((cell) => cell !== null).length === board.length) {
+        declareDraw(symbol);
+      }
     }
   }
 
@@ -156,6 +160,36 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
       title: `${symbol.toUpperCase()} wins!`,
       content: getModalContent(),
       type: 'success',
+    });
+  }
+
+  function declareDraw(symbol) {
+    function getModalContent() {
+      const handleClick = () => {
+        setBoard(getBoard());
+        setXTurn(symbol !== 'x');
+      };
+
+      return (
+        <>
+          <p>Are you ready for another fight?</p>
+
+          <div>
+            <Button
+              className="button button--primary button--center"
+              action={handleClick}
+            >
+              Let's go
+            </Button>
+          </div>
+        </>
+      );
+    }
+
+    setModal({
+      title: `It's a draw!`,
+      content: getModalContent(),
+      type: 'warning',
     });
   }
 
