@@ -20,14 +20,14 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
 
     setBoard(updatedBoard);
 
-    if (detectWin(updatedBoard, i)) {
-      declareWinner(symbol);
+    if (game.detectWin(updatedBoard, i)) {
+      game.declareWinner(symbol);
     }
     else {
       setXTurn(!xTurn);
 
-      if (updatedBoard.filter((cell) => cell !== null).length === board.length) {
-        declareDraw(symbol);
+      if (game.detectDraw(updatedBoard)) {
+        game.declareDraw(symbol);
       }
     }
   }
@@ -36,162 +36,171 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
     return Array(numberOfRows * numberOfRows).fill(null);
   }
 
-  function getRows(number) {
+  function drawBoard(number) {
     const rowsElements = [];
 
     for (let i = 0; i < number; i++) {
       rowsElements.push(
         <div key={`row${i}`} className="row">
-          {getCells(number, i)}
+          {drawCells(number, i)}
         </div>
       );
+    }
+
+    function drawCells(number, rowIndex) {
+      const cellsElements = [];
+
+      for (let i = 0; i < number; i++) {
+        const cellIndex = rowIndex * number + i;
+
+        cellsElements.push(
+          <Cell
+            key={`cell-${cellIndex}`}
+            value={board[cellIndex]}
+            onCellClick={() => handleCellClick(cellIndex)}
+            size={100 / number}
+          />
+        );
+      }
+
+      return cellsElements;
     }
 
     return rowsElements;
   }
 
-  function getCells(number, rowIndex) {
-    const cellsElements = [];
+  const game = {
+    start(symbol) {
+      setBoard(getBoard());
+      setXTurn(symbol !== 'x');
+    },
 
-    for (let i = 0; i < number; i++) {
-      const cellIndex = rowIndex * number + i;
+    detectWin(board, cellIndex) {
+      const symbol = board[cellIndex];
 
-      cellsElements.push(
-        <Cell
-          key={`cell-${cellIndex}`}
-          value={board[cellIndex]}
-          onCellClick={() => handleCellClick(cellIndex)}
-          size={100 / number}
-        />
-      );
-    }
+      // Check if an array contains only the same symbol
+      const checkSymbols = (arr) => arr.every((cell) => cell && cell === symbol);
 
-    return cellsElements;
-  }
+      // Check if the row contains only the same symbol
+      const checkRow = (arr) => {
+        // which row?
+        const rowStart = parseInt(cellIndex / numberOfRows, 10) * numberOfRows;
+        const rowEnd = rowStart + numberOfRows;
+        const row = arr.slice(rowStart, rowEnd);
 
-  function detectWin(board, cellIndex) {
-    const symbol = board[cellIndex];
+        // are the symbols the same?
+        return checkSymbols(row);
+      };
 
-    // Check if an array contains only the same symbol
-    const checkSymbols = (arr) => arr.every((cell) => cell && cell === symbol);
+      // Check if the column contains only the same symbol
+      const checkColumn = (arr) => {
+        // get the modulo
+        const modulo = cellIndex % numberOfRows;
+        // get the column
+        const column = arr.filter((_, index) => index % numberOfRows === modulo);
 
-    // Check if the row contains only the same symbol
-    const checkRow = (arr) => {
-      // which row?
-      const rowStart = parseInt(cellIndex / numberOfRows, 10) * numberOfRows;
-      const rowEnd = rowStart + numberOfRows;
-      const row = arr.slice(rowStart, rowEnd);
+        // are the symbols the same?
+        return checkSymbols(column);
+      };
 
-      // are the symbols the same?
-      return checkSymbols(row);
-    };
+      // Check if the left to right diagonal contains only the same symbol
+      const checkLeftDiagonal = (arr) => {
+        // get the diagonal
+        const diagonal = [];
 
-    // Check if the column contains only the same symbol
-    const checkColumn = (arr) => {
-      // get the modulo
-      const modulo = cellIndex % numberOfRows;
-      // get the column
-      const column = arr.filter((_, index) => index % numberOfRows === modulo);
+        for (let i = 0; i < numberOfRows; i++) {
+          diagonal.push(arr[i * (numberOfRows + 1)]);
+        }
 
-      // are the symbols the same?
-      return checkSymbols(column);
-    };
+        // are the symbols the same?
+        return checkSymbols(diagonal);
+      };
 
-    // Check if the left to right diagonal contains only the same symbol
-    const checkLeftDiagonal = (arr) => {
-      // get the diagonal
-      const diagonal = [];
+      // Check if the right to left diagonal contains only the same symbol
+      const checkRightDiagonal = (arr) => {
+        // get the diagonal
+        const diagonal = [];
 
-      for (let i = 0; i < numberOfRows; i++) {
-        diagonal.push(arr[i * (numberOfRows + 1)]);
-      }
+        for (let i = 1; i < numberOfRows + 1; i++) {
+          diagonal.push(arr[i * (numberOfRows - 1)]);
+        }
 
-      // are the symbols the same?
-      return checkSymbols(diagonal);
-    };
-
-    // Check if the right to left diagonal contains only the same symbol
-    const checkRightDiagonal = (arr) => {
-      // get the diagonal
-      const diagonal = [];
-
-      for (let i = 1; i < numberOfRows + 1; i++) {
-        diagonal.push(arr[i * (numberOfRows - 1)]);
-      }
-
-      // are the symbols the same?
-      return checkSymbols(diagonal);
-    };
-
-    return (
-      checkRow(board)
-      || checkColumn(board)
-      || checkLeftDiagonal(board)
-      || checkRightDiagonal(board)
-    );
-  }
-
-  function declareWinner(symbol) {
-    function getModalContent() {
-      const looser = symbol === 'x' ? 'o' : 'x';
-
-      const handleClick = () => {
-        setBoard(getBoard());
-        setXTurn(symbol !== 'x');
+        // are the symbols the same?
+        return checkSymbols(diagonal);
       };
 
       return (
-        <>
-          <p>{looser.toUpperCase()}, it's time to take your revenge…</p>
-
-          <div>
-            <Button
-              className="button button--primary button--center"
-              action={handleClick}
-            >
-              Let's fight
-            </Button>
-          </div>
-        </>
+        checkRow(board)
+        || checkColumn(board)
+        || checkLeftDiagonal(board)
+        || checkRightDiagonal(board)
       );
+    },
+
+    declareWinner(symbol) {
+      function getModalContent() {
+        const looser = symbol === 'x' ? 'o' : 'x';
+
+        const handleClick = () => {
+          game.start(symbol);
+        };
+
+        return (
+          <>
+            <p>{looser.toUpperCase()}, it's time to take your revenge…</p>
+
+            <div>
+              <Button
+                className="button button--primary button--center"
+                action={handleClick}
+              >
+                Let's fight
+              </Button>
+            </div>
+          </>
+        );
+      }
+
+      setModal({
+        title: `${symbol.toUpperCase()} wins!`,
+        content: getModalContent(),
+        type: 'success',
+      });
+    },
+
+    detectDraw(board) {
+      return board.filter((cell) => cell !== null).length === board.length;
+    },
+
+    declareDraw(symbol) {
+      function getModalContent() {
+        const handleClick = () => {
+          game.start(symbol);
+        };
+
+        return (
+          <>
+            <p>Are you ready for another fight?</p>
+
+            <div>
+              <Button
+                className="button button--primary button--center"
+                action={handleClick}
+              >
+                Let's go
+              </Button>
+            </div>
+          </>
+        );
+      }
+
+      setModal({
+        title: `It's a draw!`,
+        content: getModalContent(),
+        type: 'warning',
+      });
     }
-
-    setModal({
-      title: `${symbol.toUpperCase()} wins!`,
-      content: getModalContent(),
-      type: 'success',
-    });
-  }
-
-  function declareDraw(symbol) {
-    function getModalContent() {
-      const handleClick = () => {
-        setBoard(getBoard());
-        setXTurn(symbol !== 'x');
-      };
-
-      return (
-        <>
-          <p>Are you ready for another fight?</p>
-
-          <div>
-            <Button
-              className="button button--primary button--center"
-              action={handleClick}
-            >
-              Let's go
-            </Button>
-          </div>
-        </>
-      );
-    }
-
-    setModal({
-      title: `It's a draw!`,
-      content: getModalContent(),
-      type: 'warning',
-    });
-  }
+  };
 
   return (
     <div className="game tic-tac-toe container">
@@ -204,7 +213,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
       )}
 
       <div className="board">
-        {getRows(numberOfRows)}
+        {drawBoard(numberOfRows)}
       </div>
     </div>
   );
