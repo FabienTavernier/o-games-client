@@ -3,6 +3,7 @@
  *
  * Définit le style des boutons
  */
+@use 'sass:color';
 @use "../abstracts/variables" as v;
 @use "../abstracts/mixins" as m;
 @use "../abstracts/functions" as f;
@@ -30,10 +31,28 @@
     color: v.$color-white;
 
     &:not([disabled]):hover {
-      background: darken($color: v.$color-primary, $amount: 10);
-      border-color: darken($color: v.$color-primary, $amount: 10);
+      background: color.scale(v.$color-primary, $lightness: -10%);
+      border-color: color.scale(v.$color-primary, $lightness: -10%);
       color: v.$color-white;
     }
+  }
+
+  &--secondary {
+    background: v.$color-secondary;
+    border-color: v.$color-secondary;
+    color: v.$color;
+
+    &:not([disabled]):hover {
+      background: color.scale(v.$color-secondary, $lightness: -10%);
+      border-color: color.scale(v.$color-secondary, $lightness: -10%);
+      color: v.$color;
+    }
+  }
+
+  &--big {
+    @include m.sizes("default", 2);
+
+    padding: 1em 1.5em;
   }
 
   &[disabled] {
@@ -45,6 +64,6 @@
 .buttons {
   align-items: center;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   margin-top: f.add-line(3);
 }

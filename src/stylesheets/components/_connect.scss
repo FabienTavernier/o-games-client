@@ -1,0 +1,21 @@
+/**
+ * __CONNECT__
+ *
+ * Définit le style de l'interface de connexion (<Connect />)
+ */
+@use "../abstracts/variables" as v;
+
+.connect-game {
+  position: relative;
+
+  &__link {
+    color: v.$color-light;
+    display: inline-block;
+    left: calc(100% + 1rem);
+    position: absolute;
+    text-align: left;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+  }
+}

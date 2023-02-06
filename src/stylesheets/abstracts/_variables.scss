@@ -26,3 +26,18 @@ $font-code: "Source Code Pro", monospace;
 
 // Others
 $footer-height: f.add-line(2);
+
+// Export to make them available in the components
+:export {
+  color: $color;
+  colorPrimary: $color-primary;
+  colorSecondary: $color-secondary;
+  colorSuccess: $color-success;
+  colorWarning: $color-warning;
+  colorError: $color-error;
+  colorWhite: $color-white;
+  colorBlack: $color-black;
+  colorGrey: $color-grey;
+  colorLight: $color-light;
+  colorLighter: $color-lighter;
+}

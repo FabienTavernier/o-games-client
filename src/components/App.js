@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import io from 'socket.io-client';
 
 import Header from './Header';
 import Content from './Content';
@@ -13,10 +12,11 @@ import Home from '../pages/Home';
 import NotFound from '../pages/NotFound';
 import Game from '../pages/Game';
 
-const socket = io.connect('http://localhost:3001');
 
 function App() {
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  // const [socket, setSocket] = useState(null);
+  // const [socketClientID, setClientID] = useState(null);
+
   const [modal, setModal] = useState(null);
 
   const mainElement = useRef(null);
@@ -27,37 +27,44 @@ function App() {
     setModal(null);
   };
 
-  const sendMessageToServer = () => {
-    console.log('Send a message to the server');
-    socket.emit('client_send_data', { content: 42 });
+  /*
+  const connectToSocket = () => {
+    const socket = io.connect(SOCKET_SERVER);
+    setSocket(socket);
+    // console.log('Send a message to the server');
+    // socket.emit('client_send_data', { content: 42 });
   }
 
   useEffect(() => {
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
+    if (socket) {
+      socket.on('connect', () => {
+        console.log('SOCKET > Connected');
+      });
 
-    socket.on('disconnect', () => {
-      setIsConnected(false);
-    });
+      socket.on('disconnect', () => {
+        console.log('SOCKET > Disconnected');
+      });
 
-    socket.on('server_send_data', (data) => {
-      console.log(data);
-    });
+      socket.on('set_client_id', (id) => {
+        setClientID(Number(id));
+      });
 
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('server_send_data');
-    };
-  }, []);
+      socket.on('server_send_data', (data) => {
+        console.log(data);
+      });
+
+      return () => {
+        socket.off('connect');
+        socket.off('disconnect');
+        socket.off('set_client_id');
+        socket.off('server_send_data');
+      };
+    }
+  }, [socket]);
+  */
 
   return (
     <div className="App">
-      {isConnected && (
-        <button type="button" onClick={sendMessageToServer}>Connect</button>
-      )}
-
       <Header target={mainElement} />
 
       <main className="main" ref={mainElement}>
