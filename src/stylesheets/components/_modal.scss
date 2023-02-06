@@ -5,7 +5,7 @@
  */
  @use "../abstracts/variables" as v;
  @use "../abstracts/mixins" as m;
- @use "../abstracts/functions" as fn;
+ @use "../abstracts/functions" as f;
 
 .modal {
   height: 100vh;
@@ -29,7 +29,7 @@
     background: v.$color-white;
     border-radius: 4px;
     box-shadow: 0 4px 8px 0 rgba(v.$color-black, 0.2);
-    padding: fn.add-line(3);
+    padding: f.add-line(3);
     position: relative;
 
     h2 {
@@ -40,7 +40,7 @@
     }
 
     p {
-      margin-bottom: fn.add-line(1);
+      margin-bottom: f.add-line(1);
     }
 
     div {

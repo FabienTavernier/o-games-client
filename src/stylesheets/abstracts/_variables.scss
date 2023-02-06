@@ -1,4 +1,4 @@
-@use "functions" as fn;
+@use "functions" as f;
 
 // Breakpoints
 $bp-large: 1024px;
@@ -25,4 +25,4 @@ $font-sans: "Source Sans Pro", Arial, sans-serif;
 $font-code: "Source Code Pro", monospace;
 
 // Others
-$footer-height: fn.add-line(2);
+$footer-height: f.add-line(2);
