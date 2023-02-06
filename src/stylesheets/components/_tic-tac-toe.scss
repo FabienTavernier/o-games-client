@@ -37,5 +37,6 @@
     font: 700 4.25rem/1 v.$font-code;
     inset: 0;
     position: absolute;
+    width: 100%; // needed by FF
   }
 }
