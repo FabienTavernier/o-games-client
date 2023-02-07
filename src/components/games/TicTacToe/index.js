@@ -22,6 +22,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
 
   const setLocalGame = () => {
     setSocket(false);
+    setHasOpponent(true);
   };
 
   const setOnlineGame = () => {

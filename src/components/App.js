@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
@@ -14,9 +14,6 @@ import Game from '../pages/Game';
 
 
 function App() {
-  // const [socket, setSocket] = useState(null);
-  // const [socketClientID, setClientID] = useState(null);
-
   const [modal, setModal] = useState(null);
 
   const mainElement = useRef(null);
@@ -26,42 +23,6 @@ function App() {
   const handleModalClose = () => {
     setModal(null);
   };
-
-  /*
-  const connectToSocket = () => {
-    const socket = io.connect(SOCKET_SERVER);
-    setSocket(socket);
-    // console.log('Send a message to the server');
-    // socket.emit('client_send_data', { content: 42 });
-  }
-
-  useEffect(() => {
-    if (socket) {
-      socket.on('connect', () => {
-        console.log('SOCKET > Connected');
-      });
-
-      socket.on('disconnect', () => {
-        console.log('SOCKET > Disconnected');
-      });
-
-      socket.on('set_client_id', (id) => {
-        setClientID(Number(id));
-      });
-
-      socket.on('server_send_data', (data) => {
-        console.log(data);
-      });
-
-      return () => {
-        socket.off('connect');
-        socket.off('disconnect');
-        socket.off('set_client_id');
-        socket.off('server_send_data');
-      };
-    }
-  }, [socket]);
-  */
 
   return (
     <div className="App">
