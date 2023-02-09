@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Cell from './Cell';
@@ -7,6 +7,10 @@ import Button from '../../Button';
 function Board({
   modal, setModal, numberOfRows, socket, gameID,
 }) {
+  const getBoard = useCallback(() => {
+    return Array(numberOfRows * numberOfRows).fill(null);
+  }, [numberOfRows]);
+
   const [board, setBoard] = useState(getBoard());
   const [xTurn, setXTurn] = useState(true);
   const [newMove, setNewMove] = useState(false);
@@ -21,30 +25,6 @@ function Board({
       cell,
       symbol: xTurn ? 'x' : 'o',
     }));
-  }
-
-  function doMove({ cell, symbol }) {
-    const updatedBoard = [...board];
-    updatedBoard[cell] = symbol;
-
-    setBoard(updatedBoard);
-
-    if (game.detectWin(updatedBoard, cell)) {
-      game.declareWinner(symbol);
-    }
-    else {
-      setXTurn(!xTurn);
-
-      if (game.detectDraw(updatedBoard)) {
-        game.declareDraw(symbol);
-      }
-    }
-
-    setNewMove(false);
-  }
-
-  function getBoard() {
-    return Array(numberOfRows * numberOfRows).fill(null);
   }
 
   function drawBoard(number) {
@@ -80,7 +60,7 @@ function Board({
     return rowsElements;
   }
 
-  const game = {
+  const game = useMemo(() => ({
     start(symbol) {
       setBoard(getBoard());
       setXTurn(symbol !== 'x');
@@ -211,19 +191,39 @@ function Board({
         type: 'warning',
       });
     }
-  };
+  }), [getBoard, numberOfRows, setModal]);
 
   useEffect(() => {
     socket.on('player_move', (move) => {
       setNewMove(JSON.parse(move));
     });
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     if (newMove) {
       doMove(newMove);
     }
-  }, [newMove]);
+
+    function doMove({ cell, symbol }) {
+      const updatedBoard = [...board];
+      updatedBoard[cell] = symbol;
+
+      setBoard(updatedBoard);
+
+      if (game.detectWin(updatedBoard, cell)) {
+        game.declareWinner(symbol);
+      }
+      else {
+        setXTurn(!xTurn);
+
+        if (game.detectDraw(updatedBoard)) {
+          game.declareDraw(symbol);
+        }
+      }
+
+      setNewMove(false);
+    }
+  }, [board, game, newMove, xTurn]);
 
   return (
     <>
