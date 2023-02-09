@@ -30,10 +30,6 @@ function Board({
   }, [gameID, socket]);
 
   const game = useMemo(() => ({
-    start(symbol) {
-      restart(symbol);
-    },
-
     detectWin(board, cellIndex) {
       const symbol = board[cellIndex];
 
@@ -101,7 +97,7 @@ function Board({
         const looser = symbol === 'x' ? 'o' : 'x';
 
         const handleClick = () => {
-          game.start(symbol);
+          restart(symbol);
         };
 
         return (
@@ -134,7 +130,7 @@ function Board({
     declareDraw(symbol) {
       function getModalContent() {
         const handleClick = () => {
-          game.start(symbol);
+          restart(symbol);
         };
 
         return (
@@ -252,7 +248,7 @@ function Board({
     if (newMove) {
       doMove(newMove);
     }
-  }, [board, doMove, game, myTurn, newMove, xTurn]);
+  }, [doMove, newMove]);
 
   useEffect(() => {
     if (newGame) {
