@@ -15,6 +15,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
   const [gameID, setGameID] = useState(null);
   const [hasOpponent, setHasOpponent] = useState(false);
   const [share, setShare] = useState(false);
+  const [playFirst, setPlayFirst] = useState(true);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -51,6 +52,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
         socket.emit('create', newGameID);
         // save the generated ID
         setGameID(newGameID);
+        setPlayFirst(true);
       }
       else {
         // it's the player 2
@@ -58,6 +60,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
         socket.emit('join', paramsGameID);
         // save the given ID
         setGameID(paramsGameID);
+        setPlayFirst(false);
       }
     }
   }, [socket, paramsGameID]);
@@ -82,6 +85,7 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
           numberOfRows={numberOfRows}
           socket={socket}
           gameID={gameID}
+          playFirst={playFirst}
         />
       )}
     </>

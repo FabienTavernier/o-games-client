@@ -5,7 +5,7 @@ import Cell from './Cell';
 import Button from '../../Button';
 
 function Board({
-  modal, setModal, numberOfRows, socket, gameID,
+  modal, setModal, numberOfRows, socket, gameID, playFirst,
 }) {
   const getBoard = useCallback(() => {
     return Array(numberOfRows * numberOfRows).fill(null);
@@ -13,10 +13,11 @@ function Board({
 
   const [board, setBoard] = useState(getBoard());
   const [xTurn, setXTurn] = useState(true);
+  const [myTurn, setMyTurn] = useState(playFirst);
   const [newMove, setNewMove] = useState(false);
 
   function handleCellClick(cell) {
-    if (board[cell] || modal) {
+    if (board[cell] || modal || !myTurn) {
       return;
     }
 
@@ -221,9 +222,10 @@ function Board({
         }
       }
 
+      setMyTurn(!myTurn);
       setNewMove(false);
     }
-  }, [board, game, newMove, xTurn]);
+  }, [board, game, myTurn, newMove, xTurn]);
 
   return (
     <>
@@ -246,6 +248,7 @@ Board.propTypes = {
   numberOfRows: PropTypes.number.isRequired,
   socket: PropTypes.any.isRequired,
   gameID: PropTypes.string.isRequired,
+  playFirst: PropTypes.bool.isRequired,
 };
 
 Board.defaultProps = {
