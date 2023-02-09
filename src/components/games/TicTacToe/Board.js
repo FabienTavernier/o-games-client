@@ -18,16 +18,19 @@ function Board({
   const [newGame, setNewGame] = useState(null);
 
   const restart = useCallback((symbol) => {
-    socket.emit('restart', JSON.stringify({
-      gameID,
-      symbol,
-    }));
+    if (socket) {
+      socket.emit('restart', JSON.stringify({
+        gameID,
+        symbol,
+      }));
+    }
+    else {
+      setNewGame(symbol);
+    }
   }, [gameID, socket]);
 
   const game = useMemo(() => ({
     start(symbol) {
-      // setBoard(getBoard());
-      // setXTurn(symbol !== 'x');
       restart(symbol);
     },
 
