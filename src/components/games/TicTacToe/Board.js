@@ -16,51 +16,6 @@ function Board({
   const [myTurn, setMyTurn] = useState(playFirst);
   const [newMove, setNewMove] = useState(false);
 
-  function handleCellClick(cell) {
-    if (board[cell] || modal || !myTurn) {
-      return;
-    }
-
-    socket.emit('move', JSON.stringify({
-      gameID,
-      cell,
-      symbol: xTurn ? 'x' : 'o',
-    }));
-  }
-
-  function drawBoard(number) {
-    const rowsElements = [];
-
-    for (let i = 0; i < number; i++) {
-      rowsElements.push(
-        <div key={`row${i}`} className="row">
-          {drawCells(number, i)}
-        </div>
-      );
-    }
-
-    function drawCells(number, rowIndex) {
-      const cellsElements = [];
-
-      for (let i = 0; i < number; i++) {
-        const cellIndex = rowIndex * number + i;
-
-        cellsElements.push(
-          <Cell
-            key={`cell-${cellIndex}`}
-            value={board[cellIndex]}
-            onCellClick={() => handleCellClick(cellIndex)}
-            size={100 / number}
-          />
-        );
-      }
-
-      return cellsElements;
-    }
-
-    return rowsElements;
-  }
-
   const game = useMemo(() => ({
     start(symbol) {
       setBoard(getBoard());
@@ -194,38 +149,93 @@ function Board({
     }
   }), [getBoard, numberOfRows, setModal]);
 
+  const doMove = useCallback(({ cell, symbol }) => {
+    const updatedBoard = [...board];
+    updatedBoard[cell] = symbol;
+
+    setBoard(updatedBoard);
+
+    if (game.detectWin(updatedBoard, cell)) {
+      game.declareWinner(symbol);
+    }
+    else {
+      setXTurn(!xTurn);
+
+      if (game.detectDraw(updatedBoard)) {
+        game.declareDraw(symbol);
+      }
+    }
+
+    setMyTurn(socket ? !myTurn : true);
+    setNewMove(false);
+  }, [board, game, myTurn, socket, xTurn]);
+
+  function handleCellClick(cell) {
+    if (board[cell] || modal || !myTurn) {
+      return;
+    }
+
+    if (socket) {
+      socket.emit('move', JSON.stringify({
+        gameID,
+        cell,
+        symbol: xTurn ? 'x' : 'o',
+      }));
+    }
+    else {
+      doMove({
+        cell,
+        symbol: xTurn ? 'x' : 'o',
+      });
+    }
+  }
+
+  function drawBoard(number) {
+    const rowsElements = [];
+
+    for (let i = 0; i < number; i++) {
+      rowsElements.push(
+        <div key={`row${i}`} className="row">
+          {drawCells(number, i)}
+        </div>
+      );
+    }
+
+    function drawCells(number, rowIndex) {
+      const cellsElements = [];
+
+      for (let i = 0; i < number; i++) {
+        const cellIndex = rowIndex * number + i;
+
+        cellsElements.push(
+          <Cell
+            key={`cell-${cellIndex}`}
+            value={board[cellIndex]}
+            onCellClick={() => handleCellClick(cellIndex)}
+            size={100 / number}
+          />
+        );
+      }
+
+      return cellsElements;
+    }
+
+    return rowsElements;
+  }
+
   useEffect(() => {
-    socket.on('player_move', (move) => {
-      setNewMove(JSON.parse(move));
-    });
+    if (socket) {
+      socket.on('player_move', (move) => {
+        setNewMove(JSON.parse(move));
+      });
+    }
   }, [socket]);
 
   useEffect(() => {
     if (newMove) {
       doMove(newMove);
     }
-
-    function doMove({ cell, symbol }) {
-      const updatedBoard = [...board];
-      updatedBoard[cell] = symbol;
-
-      setBoard(updatedBoard);
-
-      if (game.detectWin(updatedBoard, cell)) {
-        game.declareWinner(symbol);
-      }
-      else {
-        setXTurn(!xTurn);
-
-        if (game.detectDraw(updatedBoard)) {
-          game.declareDraw(symbol);
-        }
-      }
-
-      setMyTurn(!myTurn);
-      setNewMove(false);
-    }
-  }, [board, game, myTurn, newMove, xTurn]);
+  }, [board, doMove, game, myTurn, newMove, xTurn]);
 
   return (
     <>
@@ -247,12 +257,13 @@ Board.propTypes = {
   setModal: PropTypes.func.isRequired,
   numberOfRows: PropTypes.number.isRequired,
   socket: PropTypes.any.isRequired,
-  gameID: PropTypes.string.isRequired,
+  gameID: PropTypes.string,
   playFirst: PropTypes.bool.isRequired,
 };
 
 Board.defaultProps = {
   modal: null,
+  gameID: null,
 };
 
 export default Board;
