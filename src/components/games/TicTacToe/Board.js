@@ -1,26 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Cell from './Cell';
 import Button from '../../Button';
 
-function Board({ modal, setModal, numberOfRows }) {
+function Board({
+  modal, setModal, numberOfRows, socket, gameID,
+}) {
   const [board, setBoard] = useState(getBoard());
   const [xTurn, setXTurn] = useState(true);
+  const [newMove, setNewMove] = useState(false);
 
-  function handleCellClick(i) {
-    if (board[i] || modal) {
+  function handleCellClick(cell) {
+    if (board[cell] || modal) {
       return;
     }
 
-    const symbol = xTurn ? 'x' : 'o';
+    socket.emit('move', JSON.stringify({
+      gameID,
+      cell,
+      symbol: xTurn ? 'x' : 'o',
+    }));
+  }
 
+  function doMove({ cell, symbol }) {
     const updatedBoard = [...board];
-    updatedBoard[i] = symbol;
+    updatedBoard[cell] = symbol;
 
     setBoard(updatedBoard);
 
-    if (game.detectWin(updatedBoard, i)) {
+    if (game.detectWin(updatedBoard, cell)) {
       game.declareWinner(symbol);
     }
     else {
@@ -30,6 +39,8 @@ function Board({ modal, setModal, numberOfRows }) {
         game.declareDraw(symbol);
       }
     }
+
+    setNewMove(false);
   }
 
   function getBoard() {
@@ -202,6 +213,18 @@ function Board({ modal, setModal, numberOfRows }) {
     }
   };
 
+  useEffect(() => {
+    socket.on('player_move', (move) => {
+      setNewMove(JSON.parse(move));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (newMove) {
+      doMove(newMove);
+    }
+  }, [newMove]);
+
   return (
     <>
       {!modal && (
@@ -221,6 +244,8 @@ Board.propTypes = {
   modal: PropTypes.any,
   setModal: PropTypes.func.isRequired,
   numberOfRows: PropTypes.number.isRequired,
+  socket: PropTypes.any.isRequired,
+  gameID: PropTypes.string.isRequired,
 };
 
 Board.defaultProps = {

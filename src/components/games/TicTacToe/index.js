@@ -80,6 +80,8 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
           modal={modal}
           setModal={setModal}
           numberOfRows={numberOfRows}
+          socket={socket}
+          gameID={gameID}
         />
       )}
     </>
