@@ -15,11 +15,20 @@ function Board({
   const [xTurn, setXTurn] = useState(true);
   const [myTurn, setMyTurn] = useState(playFirst);
   const [newMove, setNewMove] = useState(false);
+  const [newGame, setNewGame] = useState(null);
+
+  const restart = useCallback((symbol) => {
+    socket.emit('restart', JSON.stringify({
+      gameID,
+      symbol,
+    }));
+  }, [gameID, socket]);
 
   const game = useMemo(() => ({
     start(symbol) {
-      setBoard(getBoard());
-      setXTurn(symbol !== 'x');
+      // setBoard(getBoard());
+      // setXTurn(symbol !== 'x');
+      restart(symbol);
     },
 
     detectWin(board, cellIndex) {
@@ -147,7 +156,7 @@ function Board({
         type: 'warning',
       });
     }
-  }), [getBoard, numberOfRows, setModal]);
+  }), [numberOfRows, restart, setModal]);
 
   const doMove = useCallback(({ cell, symbol }) => {
     const updatedBoard = [...board];
@@ -228,6 +237,11 @@ function Board({
       socket.on('player_move', (move) => {
         setNewMove(JSON.parse(move));
       });
+
+      socket.on('restart', (data) => {
+        const { symbol } = JSON.parse(data);
+        setNewGame(symbol);
+      });
     }
   }, [socket]);
 
@@ -236,6 +250,14 @@ function Board({
       doMove(newMove);
     }
   }, [board, doMove, game, myTurn, newMove, xTurn]);
+
+  useEffect(() => {
+    if (newGame) {
+      setBoard(getBoard());
+      setXTurn(newGame !== 'x');
+      setModal(null);
+    }
+  }, [getBoard, newGame, setModal]);
 
   return (
     <>
