@@ -15,9 +15,10 @@
   border: 1px solid v.$color-light;
   border-radius: 4px;
   cursor: pointer;
-  display: block;
+  display: inline-block;
   padding: 0 1em;
   text-align: center;
+  text-decoration: none;
   transition: all 0.25s ease-out;
   white-space: nowrap;
 

@@ -6,7 +6,7 @@ import Icon from '../../ui/Icon';
 import vars from '../../../stylesheets/abstracts/_variables.scss';
 
 function Connect({
-  localGame, onlineGame, share, setShare, gameID, paramsGameID
+  localGame, onlineGame, share, setShare, gameID, paramsGameID,
 }) {
   return (
     <div className="connect">
@@ -58,7 +58,7 @@ function Connect({
           </div>
         )}
 
-    </div>
+      </div>
     </div>
   );
 }
