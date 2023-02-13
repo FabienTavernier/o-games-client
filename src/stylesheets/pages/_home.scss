@@ -1,0 +1,44 @@
+/**
+ * __HOME__
+ *
+ * Définit le layout de la page Home (<div class="home" />)
+ */
+@use '../abstracts/variables' as v;
+
+.home {
+  text-align: center;
+
+  &-cards {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    gap: 5rem;
+
+    > a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
+  &-card {
+    border-radius: 4px;
+    width: 10rem;
+    text-align: left;
+
+    &__screenshot {
+      margin-bottom: 1rem;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    h3 {
+      transition: color .3s linear;
+    }
+
+    &:hover {
+      h3 {
+        color: v.$color-primary;
+      }
+    }
+  }
+}
