@@ -5,12 +5,37 @@ import Icon from '../../ui/Icon';
 
 import vars from '../../../stylesheets/abstracts/_variables.scss';
 
+// TODO: share variant game in online mode
+// TODO: save numberOfRows value in the local storage
+
 function Connect({
-  localGame, onlineGame, share, setShare, gameID, paramsGameID,
+  localGame,
+  onlineGame,
+  share,
+  setShare,
+  gameID,
+  paramsGameID,
+  numberOfRows,
+  setNumberOfRows,
 }) {
   return (
     <div className="connect">
-      <p>Do you want to play?</p>
+      <h3>Do you want to play?</h3>
+
+      <div className="buttons buttons--narrow">
+        <p>Variant:</p>
+
+        {[3, 4, 5].map((variant) => (
+          <Button
+            key={variant}
+            className="button button--secondary"
+            action={() => { setNumberOfRows(variant); }}
+            disabled={numberOfRows === variant}
+          >
+            {variant} x {variant}
+          </Button>
+        ))}
+      </div>
 
       <div className="buttons">
         <Button
@@ -70,6 +95,8 @@ Connect.propTypes = {
   setShare: PropTypes.func.isRequired,
   gameID: PropTypes.string,
   paramsGameID: PropTypes.string,
+  numberOfRows: PropTypes.number.isRequired,
+  setNumberOfRows: PropTypes.func.isRequired,
 };
 
 Connect.defaultProps = {

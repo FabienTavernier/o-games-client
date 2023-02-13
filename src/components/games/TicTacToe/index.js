@@ -11,13 +11,14 @@ import Button from '../../Button';
 
 const SOCKET_SERVER = 'http://localhost:3001';
 
-function TicTacToe({ modal, setModal, numberOfRows }) {
+function TicTacToe({ modal, setModal }) {
   const [socket, setSocket] = useState(null);
   const [gameID, setGameID] = useState(null);
   const [hasOpponent, setHasOpponent] = useState(false);
   const [share, setShare] = useState(false);
   const [playFirst, setPlayFirst] = useState(true);
   const [rejected, setRejected] = useState(false);
+  const [numberOfRows, setNumberOfRows] = useState(3);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -122,6 +123,8 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
               setShare={setShare}
               gameID={gameID}
               paramsGameID={paramsGameID}
+              numberOfRows={numberOfRows}
+              setNumberOfRows={setNumberOfRows}
             />
           )}
 
@@ -144,12 +147,10 @@ function TicTacToe({ modal, setModal, numberOfRows }) {
 TicTacToe.propTypes = {
   modal: PropTypes.any,
   setModal: PropTypes.func.isRequired,
-  numberOfRows: PropTypes.number,
 };
 
 TicTacToe.defaultProps = {
   modal: null,
-  numberOfRows: 3,
 };
 
 export default TicTacToe;
