@@ -6,7 +6,6 @@ import Icon from '../../ui/Icon';
 
 import vars from '../../../stylesheets/abstracts/_variables.scss';
 
-// DONE: share variant game in online mode
 // TODO: save numberOfRows value in the local storage
 
 function Connect({
@@ -30,6 +29,10 @@ function Connect({
   useEffect(() => {
     setShareLink(`${window.location.href}?gameID=${gameID}&variant=${variant}`);
   }, [gameID, variant]);
+
+  useEffect(() => {
+    localStorage.setItem('variant', variant);
+  }, [variant]);
 
   return (
     <div className="connect">
