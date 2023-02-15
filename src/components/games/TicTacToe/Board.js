@@ -180,8 +180,6 @@ function Board({
 
   function handleCellClick(cell) {
     if (board[cell] || modal || !myTurn) {
-      console.log('CELL > click');
-      console.log(board[cell], modal, !myTurn);
       return;
     }
 

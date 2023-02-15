@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Button from "../../Button";
@@ -5,7 +6,7 @@ import Icon from '../../ui/Icon';
 
 import vars from '../../../stylesheets/abstracts/_variables.scss';
 
-// TODO: share variant game in online mode
+// DONE: share variant game in online mode
 // TODO: save numberOfRows value in the local storage
 
 function Connect({
@@ -16,8 +17,20 @@ function Connect({
   gameID,
   paramsGameID,
   numberOfRows,
-  setNumberOfRows,
+  changeVariant,
 }) {
+  const [variant, setVariant] = useState(numberOfRows);
+  const [shareLink, setShareLink] = useState(null);
+
+  const onVariantClick = (value) => {
+    setVariant(value);
+    changeVariant(value);
+  };
+
+  useEffect(() => {
+    setShareLink(`${window.location.href}?gameID=${gameID}&variant=${variant}`);
+  }, [gameID, variant]);
+
   return (
     <div className="connect">
       <h3>Do you want to play?</h3>
@@ -25,14 +38,14 @@ function Connect({
       <div className="buttons buttons--narrow">
         <p>Variant:</p>
 
-        {[3, 4, 5].map((variant) => (
+        {[3, 4, 5].map((value) => (
           <Button
-            key={variant}
+            key={value}
             className="button button--secondary"
-            action={() => { setNumberOfRows(variant); }}
-            disabled={numberOfRows === variant}
+            action={() => { onVariantClick(value); }}
+            disabled={variant === value}
           >
-            {variant} x {variant}
+            {value} x {value}
           </Button>
         ))}
       </div>
@@ -60,9 +73,9 @@ function Connect({
               className="button button--secondary button--big"
               action={() => {
                 setShare(!share);
-                navigator.clipboard.writeText(`${window.location.href}?gameID=${gameID}`);
+                navigator.clipboard.writeText(shareLink);
               }}
-              title={`${window.location.href}?gameID=${gameID}`}
+              title={shareLink}
             >
               Share the game link
             </Button>
@@ -70,7 +83,7 @@ function Connect({
             {share && (
               <span
                 className="connect-game__link"
-                title={`${window.location.href}?gameID=${gameID}`}
+                title={shareLink}
               >
                 <Icon
                   icon="checkmark"
@@ -96,7 +109,7 @@ Connect.propTypes = {
   gameID: PropTypes.string,
   paramsGameID: PropTypes.string,
   numberOfRows: PropTypes.number.isRequired,
-  setNumberOfRows: PropTypes.func.isRequired,
+  changeVariant: PropTypes.func.isRequired,
 };
 
 Connect.defaultProps = {

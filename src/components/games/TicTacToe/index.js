@@ -14,15 +14,16 @@ const SOCKET_SERVER = 'http://localhost:3001';
 function TicTacToe({ modal, setModal }) {
   const [socket, setSocket] = useState(null);
   const [gameID, setGameID] = useState(null);
+  const [variant, setVariant] = useState(3);
   const [hasOpponent, setHasOpponent] = useState(false);
   const [share, setShare] = useState(false);
   const [playFirst, setPlayFirst] = useState(true);
   const [rejected, setRejected] = useState(false);
-  const [numberOfRows, setNumberOfRows] = useState(3);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const paramsGameID = params.get('gameID');
+  const numberOfRows = Number(params.get('variant')) || variant;
 
   const navigate = useNavigate();
 
@@ -87,10 +88,13 @@ function TicTacToe({ modal, setModal }) {
       else {
         // it's the player 2
         // tell the server he joins the game
-        socket.emit('join', paramsGameID);
+        socket.emit('join', JSON.stringify({
+          gameID: paramsGameID,
+          variant: numberOfRows,
+        }));
       }
     }
-  }, [socket, paramsGameID]);
+  }, [socket, paramsGameID, numberOfRows]);
 
   return (
     <>
@@ -124,7 +128,7 @@ function TicTacToe({ modal, setModal }) {
               gameID={gameID}
               paramsGameID={paramsGameID}
               numberOfRows={numberOfRows}
-              setNumberOfRows={setNumberOfRows}
+              changeVariant={setVariant}
             />
           )}
 
